@@ -16,7 +16,7 @@ def check_field(expected_value: float, extracted_value: float | None, confidence
 def compare(expected: ExpectedSpec, extracted: ExtractedLabel) -> list[FieldResult]:
     results = []
     #Numeric fields
-    numeric_fields = ["total_fat_g", "cholesterol_mg", "sodium_mg"]
+    numeric_fields = ["total_fat_g", "cholesterol_mg", "sodium_mg", "serving_size"]
     for field_name in numeric_fields:
         expected_val = getattr(expected, field_name)
         reading = getattr(extracted, field_name)  # a FieldReading
@@ -32,24 +32,7 @@ def compare(expected: ExpectedSpec, extracted: ExtractedLabel) -> list[FieldResu
 
 
     # Brand name field
-    text_fields = ["brand_name", "serving_size"]
-    for field_name in text_fields:
-        expected_val = getattr(expected, field_name).strip().lower()
-        reading = getattr(extracted, field_name)
 
-        if reading.value is None or reading.confidence < 0.6:
-            status = "missing"
-        elif str(reading.value).strip().lower() == expected_val:
-            status = "match"
-        else:
-            status = "critical_failure"
-
-        results.append(FieldResult(
-            field_name=field_name,
-            expected_value=getattr(expected, field_name),
-            extracted_value=str(reading.value),
-            status=status,
-        ))
 
     # Allergens field
     expected_set = set(a.strip().lower() for a in expected.allergens)

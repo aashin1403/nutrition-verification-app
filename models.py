@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 class ExpectedSpec(BaseModel):
     brand_name: str
-    serving_size: str
+    serving_size: float
     total_fat_g: float
     cholesterol_mg: float
     sodium_mg: float
@@ -14,7 +14,6 @@ class FieldReading(BaseModel):
     raw_text: str | None       
 
 class ExtractedLabel(BaseModel):
-    brand_name: FieldReading
     serving_size: FieldReading
     total_fat_g: FieldReading
     cholesterol_mg: FieldReading
