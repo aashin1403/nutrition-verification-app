@@ -5,11 +5,13 @@ from dotenv import load_dotenv
 from models import ExtractedLabel, FieldReading, failed_extraction
 import json
 import time
+import streamlit as st
 
 
 load_dotenv()
 
-client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+api_key = st.secrets.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")
+client = genai.Client(api_key=api_key)
 
 with open("data/images.jpg", "rb") as f:
     image_bytes = f.read()
