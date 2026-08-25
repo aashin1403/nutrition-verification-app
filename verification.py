@@ -31,21 +31,23 @@ def compare(expected: ExpectedSpec, extracted: ExtractedLabel) -> list[FieldResu
         ))
 
 
-    # Brand name field
-
 
     # Allergens field
-    expected_set = set(a.strip().lower() for a in expected.allergens)
-    extracted_set = set(a.strip().lower() for a in extracted.allergens)
-
-    if expected_set == extracted_set:
-        allergen_status = "match"
-    elif expected_set - extracted_set:
-        # label is missing an allergen that the spec says should be there **always critical
-        allergen_status = "critical_failure"
+    if not extracted.allergens:
+            allergen_status = "missing"
     else:
-        # extracted has extra allergens not in the spec (flagged)
-        allergen_status = "format_difference"
+        expected_set = set(a.strip().lower() for a in expected.allergens)
+        extracted_set = set(a.strip().lower() for a in extracted.allergens)
+
+    
+        if expected_set == extracted_set:
+            allergen_status = "match"
+        elif expected_set - extracted_set:
+            # label is missing an allergen that the spec says should be there **always critical
+            allergen_status = "critical_failure"
+        else:
+            # extracted has extra allergens not in the spec (flagged)
+            allergen_status = "format_difference"
 
     results.append(FieldResult(
         field_name="allergens",

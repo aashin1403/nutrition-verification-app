@@ -26,3 +26,15 @@ class FieldResult(BaseModel):
     extracted_value: str | None
     status: str
     note: str | None = None
+
+
+def failed_extraction() -> ExtractedLabel:
+    # Values if extraction fails completely. All fields are missing, and confidence is 0.0.
+    empty_reading = FieldReading(value=None, confidence=0.0, raw_text=None)
+    return ExtractedLabel(
+        serving_size=empty_reading,
+        total_fat_g=empty_reading,
+        cholesterol_mg=empty_reading,
+        sodium_mg=empty_reading,
+        allergens=[],
+    )
