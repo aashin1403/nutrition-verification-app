@@ -92,8 +92,9 @@ if "batch_results" in st.session_state:
                     icon, color = STATUS_STYLE.get(r.status, ("❓", "gray"))
                     status_label = r.status.replace("_", " ").title()
 
+                    
                     confidence_line = ""
-                    if r.status == "format_difference" and r.confidence is not None:
+                    if r.confidence is not None:
                         confidence_line = f"Confidence: `{r.confidence:.0%}`  \n"
 
                     st.markdown(
