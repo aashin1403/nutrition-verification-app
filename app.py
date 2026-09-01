@@ -27,7 +27,7 @@ if uploaded_files:
         with st.expander(f"📄 {file.name}", expanded=single_upload):
             st.image(file, width=200)
             st.text_input("Brand Name", key=f"brand_{i}")
-            st.text_input("Serving Size (e.g. 30g)", key=f"serving_{i}")
+            st.number_input("Serving Size (g)", min_value=0.0, key=f"serving_{i}")
             st.number_input("Total Fat (g)", min_value=0.0, key=f"fat_{i}")
             st.number_input("Cholesterol (mg)", min_value=0.0, key=f"chol_{i}")
             st.number_input("Sodium (mg)", min_value=0.0, key=f"sodium_{i}")

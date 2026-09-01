@@ -2,19 +2,13 @@ import os
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
-from models import ExtractedLabel, FieldReading, failed_extraction
+from models import ExtractedLabel, failed_extraction
 import json
 import time
-
 
 load_dotenv()
 
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
-
-with open("data/images.jpg", "rb") as f:
-    image_bytes = f.read()
-
-image_part = types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg")
 
 prompt = """
 Analyze this nutrition facts label image and extract the following fields.
@@ -59,15 +53,15 @@ def parse_gemini_response(raw_text: str) -> ExtractedLabel | None:
         raise ValueError(f"Gemini response was not valid JSON: {e}") from e
 
     if not data.get("is_nutrition_label", False):
-        return None  
+        return None
 
     try:
         return ExtractedLabel(**{k: v for k, v in data.items() if k != "is_nutrition_label"})
     except Exception as e:
         raise ValueError(f"Gemini JSON did not match expected schema: {e}") from e
 
-    
-def extract_label(image_bytes: bytes, max_retries: int = 2) -> ExtractedLabel:
+
+def extract_label(image_bytes: bytes, max_retries: int = 2) -> ExtractedLabel | None:
     image_part = types.Part.from_bytes(data=image_bytes, mime_type="image/jpeg")
 
     last_error = None
@@ -79,13 +73,11 @@ def extract_label(image_bytes: bytes, max_retries: int = 2) -> ExtractedLabel:
                 contents=[prompt, image_part]
             )
             return parse_gemini_response(response.text)
-
         except Exception as e:
             last_error = e
             if attempt < max_retries:
-                time.sleep(1.5 * (attempt + 1))  # brief backoff before retrying
+                time.sleep(1.5 * (attempt + 1))
                 continue
 
-    # all retries exhausted — degrade gracefully instead of crashing
     print(f"extract_label failed after {max_retries + 1} attempts: {last_error}")
     return failed_extraction()

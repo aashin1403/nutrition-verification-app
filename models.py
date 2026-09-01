@@ -9,7 +9,7 @@ class ExpectedSpec(BaseModel):
     allergens: list[str]
 
 class FieldReading(BaseModel):
-    value: float | str | None       
+    value: float | None       
     confidence: float          # 0.0 to 1.0
     raw_text: str | None       
 
@@ -25,6 +25,7 @@ class FieldResult(BaseModel):
     expected_value: str
     extracted_value: str | None
     status: str
+    confidence: float | None = None
     note: str | None = None
 
 
