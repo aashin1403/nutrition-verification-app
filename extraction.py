@@ -5,10 +5,12 @@ from dotenv import load_dotenv
 from models import ExtractedLabel, failed_extraction
 import json
 import time
+import streamlit as st
 
 load_dotenv()
 
-client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+api_key = st.secrets.get("GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")
+client = genai.Client(api_key=api_key)
 
 prompt = """
 Analyze this nutrition facts label image and extract the following fields.
