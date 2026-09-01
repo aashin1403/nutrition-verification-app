@@ -28,6 +28,7 @@ def compare(expected: ExpectedSpec, extracted: ExtractedLabel) -> list[FieldResu
             expected_value=str(expected_val),
             extracted_value=str(reading.value),
             status=status,
+            confidence=reading.confidence,
         ))
 
 
@@ -54,6 +55,7 @@ def compare(expected: ExpectedSpec, extracted: ExtractedLabel) -> list[FieldResu
         expected_value=", ".join(expected.allergens),
         extracted_value=", ".join(extracted.allergens),
         status=allergen_status,
+        confidence=None,
     ))
 
     return results
