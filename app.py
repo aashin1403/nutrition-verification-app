@@ -72,8 +72,16 @@ if "batch_results" in st.session_state:
             summary_rows.append((item["filename"], "🚫 Not a label", "—"))
         else:
             critical_count = sum(1 for r in item["results"] if r.status == "critical_failure")
-            overall = "❌ Critical" if critical_count > 0 else "✅ Pass"
-            summary_rows.append((item["filename"], overall, f"{critical_count} critical"))
+            missing_count = sum(1 for r in item["results"] if r.status == "missing")
+
+            if critical_count > 0:
+                overall = "❌ Critical"
+            elif missing_count > 0:
+                overall = "❓ Needs Review"
+            else:
+                overall = "✅ Pass"
+
+            summary_rows.append((item["filename"], overall, f"{critical_count} critical, {missing_count} missing"))
 
     for filename, overall, detail in summary_rows:
         st.markdown(f"**{filename}** — {overall} ({detail})")
